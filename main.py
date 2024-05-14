@@ -6,7 +6,7 @@ import string
 class BankingApplication:
     pass  # Placeholder for the Banking Application class
 
-class BankingGUI:
+class Banking:
     def __init__(self, master):
         self.master = master
         self.master.title("Banking Application")
@@ -61,15 +61,10 @@ class BankingGUI:
         register_button = tk.Button(register_window, text="Register", command=self.register, width=15)
         register_button.pack(pady=10)
 
-    def login(self):
-        pass  # Placeholder for the login method
-
-    def forgot_password(self):
-        pass  # Placeholder for the forgot_password method
 
 def main():
     root = tk.Tk()
-    app = BankingGUI(root)
+    app = Banking(root)
     root.mainloop()
 
 if __name__ == "__main__":
