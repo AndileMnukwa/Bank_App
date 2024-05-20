@@ -3,28 +3,23 @@ from tkinter import messagebox, simpledialog
 from datetime import datetime
 import random
 import string
-import sqlite3
+import csv
 import hashlib
+import os
 
 class BankingApplication:
     def __init__(self):
         self.current_user = None
         self.current_balance = 0
-        self.conn = sqlite3.connect('your_database_file.db')
-        self.create_tables()
+        self.user_file = 'users.csv'
+        self.create_user_file()
 
-    def create_tables(self):
-        # Create the users table if it doesn't exist
-        with self.conn:
-            self.conn.execute('''
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NOT NULL,
-                    bank_pin TEXT NOT NULL,
-                    password TEXT NOT NULL,
-                    balance REAL DEFAULT 0
-                )
-            ''')
+    def create_user_file(self):
+        # Create the users CSV file if it doesn't exist
+        if not os.path.exists(self.user_file):
+            with open(self.user_file, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['id', 'username', 'bank_pin', 'password', 'balance'])
 
     def generate_password(self):
         password_length = 12
@@ -34,42 +29,64 @@ class BankingApplication:
     def hash_password(self, password):
         # Hash the password using a secure hashing algorithm like SHA-256
         return hashlib.sha256(password.encode()).hexdigest()
+
     def register(self, username, bank_pin, password):
-        with self.conn:
-            self.conn.execute('INSERT INTO users (username, bank_pin, password, balance) VALUES (?, ?, ?, 0)',
-                              (username, bank_pin, password))
+        user_id = self.generate_user_id()
+        with open(self.user_file, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([user_id, username, bank_pin, password, 0.0])
+
+    def generate_user_id(self):
+        with open(self.user_file, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            data = list(reader)
+            if len(data) == 1:  # Only header row present
+                return 1
+            else:
+                return int(data[-1][0]) + 1
 
     def login(self, username, bank_pin, password):
-        with self.conn:
-            cursor = self.conn.execute('SELECT * FROM users WHERE username=? AND bank_pin=? AND password=?',
-                                       (username, bank_pin, password))
-            data = cursor.fetchone()
-            if data:
-                self.current_user = username
-                return True
+        with open(self.user_file, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[1] == username and row[2] == bank_pin and row[3] == password:
+                    self.current_user = username
+                    self.current_balance = float(row[4])
+                    return True
             return False
 
     def check_balance(self):
-        with self.conn:
-            cursor = self.conn.execute('SELECT balance FROM users WHERE username=?', (self.current_user,))
-            self.current_balance = cursor.fetchone()[0]
+        with open(self.user_file, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[1] == self.current_user:
+                    self.current_balance = float(row[4])
+                    break
+
+    def update_user_balance(self, new_balance):
+        rows = []
+        with open(self.user_file, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[1] == self.current_user:
+                    row[4] = new_balance
+                rows.append(row)
+        with open(self.user_file, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
 
     def deposit(self, amount):
-        with self.conn:
-            cursor = self.conn.execute('SELECT balance FROM users WHERE username=?', (self.current_user,))
-            current_balance = cursor.fetchone()[0]
-            new_balance = current_balance + amount
-            self.conn.execute('UPDATE users SET balance=? WHERE username=?', (new_balance, self.current_user))
-            self.current_balance = new_balance
+        self.check_balance()  # Update current balance from CSV
+        new_balance = self.current_balance + amount
+        self.update_user_balance(new_balance)
+        self.current_balance = new_balance
 
     def withdraw(self, amount):
-        with self.conn:
-            cursor = self.conn.execute('SELECT balance FROM users WHERE username=?', (self.current_user,))
-            current_balance = cursor.fetchone()[0]
-            if current_balance >= amount:
-                new_balance = current_balance - amount
-                self.conn.execute('UPDATE users SET balance=? WHERE username=?', (new_balance, self.current_user))
-                self.current_balance = new_balance
+        self.check_balance()  # Update current balance from CSV
+        if self.current_balance >= amount:
+            new_balance = self.current_balance - amount
+            self.update_user_balance(new_balance)
+            self.current_balance = new_balance
 
     def record_transaction(self, transaction_type, amount):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -77,21 +94,24 @@ class BankingApplication:
             file.write(f"{timestamp} - {self.current_user} - {transaction_type} - Amount: R{amount}\n")
 
     def update_password(self, username, new_password):
-        with self.conn:
-            cursor = self.conn.cursor()
-            cursor.execute('UPDATE users SET password=? WHERE username=?', (new_password, username))
-            self.conn.commit()
+        rows = []
+        with open(self.user_file, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[1] == username:
+                    row[3] = new_password
+                rows.append(row)
+        with open(self.user_file, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
 
     def forgot_password(self, username):
-        with self.conn:
-            cursor = self.conn.execute('SELECT password FROM users WHERE username=?', (username,))
-            data = cursor.fetchone()
-            if data:
-                return data[0]
+        with open(self.user_file, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[1] == username:
+                    return row[3]
             return None
-
-    def __del__(self):
-        self.conn.close()
 
 
 class BankingGUI:
@@ -106,7 +126,7 @@ class BankingGUI:
         self.banking_app = BankingApplication()
         self.master.configure(bg='black')
 
-        self.logo_image = tk.PhotoImage(file="logo.png")  # Change "logo.png" to your image file
+        self.logo_image = tk.PhotoImage(file="../../BankApp/logo.png")  # Change "logo.png" to your image file
 
         # Create widgets inside the main window
         self.label = tk.Label(self.master, text="Binary Finance", font=('Helvetica', 20, 'bold'), bg='black', fg='gold')
