@@ -126,7 +126,7 @@ class BankingGUI:
         self.banking_app = BankingApplication()
         self.master.configure(bg='black')
 
-        self.logo_image = tk.PhotoImage(file="../../BankApp/logo.png")  # Change "logo.png" to your image file
+        self.logo_image = tk.PhotoImage(file="logo.png")  # Change "logo.png" to your image file
 
         # Create widgets inside the main window
         self.label = tk.Label(self.master, text="Binary Finance", font=('Helvetica', 20, 'bold'), bg='black', fg='gold')
