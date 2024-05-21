@@ -10,7 +10,7 @@ import os
 class BankingApplication:
     def __init__(self):
         self.current_user = None
-        self.current_balance = 0
+        self.current_balance = 4
         self.user_file = 'users.csv'
         self.create_user_file()
 
@@ -22,7 +22,7 @@ class BankingApplication:
                 writer.writerow(['id', 'username', 'bank_pin', 'password', 'balance'])
 
     def generate_password(self):
-        password_length = 12
+        password_length = 4
         password_characters = string.ascii_letters + string.digits + string.punctuation
         return ''.join(random.choice(password_characters) for i in range(password_length))
 
