@@ -250,7 +250,7 @@ class BankingGUI:
 
         make_transaction = messagebox.askyesno("Transaction", "Would you like to make a transaction?")
         if make_transaction:
-            transaction_type = messagebox.askyesno("Transaction Type", "Would you like to make a deposit?")
+            transaction_type = messagebox.askyesno("Transaction Type", "Would you like to make a deposit/withdraw?")
             if transaction_type:
                 self.display_transaction_buttons(transaction_window)
             else:
@@ -286,6 +286,7 @@ class BankingGUI:
     def check_balance(self):
         self.banking_app.check_balance()
         messagebox.showinfo("Balance", f"Your current balance is: R{self.banking_app.current_balance}")
+        self.update_balance_label()
 
     def open_deposit_window(self):
         deposit_window = tk.Toplevel(self.master)
