@@ -1,0 +1,5 @@
+2024-05-20 15:19:50 - ree - Deposit - Amount: R100000000000.0
+2024-05-21 09:12:37 - ree - Withdrawal - Amount: R10000000.0
+2024-05-21 09:36:22 - ree - Withdrawal - Amount: R100000.0
+2024-05-21 09:38:24 - ree - Deposit - Amount: R1999999.0
+2024-05-21 09:38:40 - ree - Deposit - Amount: R1999999.0
