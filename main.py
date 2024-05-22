@@ -1,6 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
-from tkinter import filedialog
+from tkinter import messagebox, simpledialog, filedialog
 from datetime import datetime
 import random
 import string
@@ -11,12 +10,11 @@ import os
 class BankingApplication:
     def __init__(self):
         self.current_user = None
-        self.current_balance = 4
+        self.current_balance = 0.0
         self.user_file = 'users.csv'
         self.create_user_file()
 
     def create_user_file(self):
-        # Create the users CSV file if it doesn't exist
         if not os.path.exists(self.user_file):
             with open(self.user_file, mode='w', newline='') as file:
                 writer = csv.writer(file)
@@ -28,7 +26,6 @@ class BankingApplication:
         return ''.join(random.choice(password_characters) for i in range(password_length))
 
     def hash_password(self, password):
-        # Hash the password using a secure hashing algorithm like SHA-256
         return hashlib.sha256(password.encode()).hexdigest()
 
     def register(self, username, bank_pin, password):
@@ -41,7 +38,7 @@ class BankingApplication:
         with open(self.user_file, mode='r', newline='') as file:
             reader = csv.reader(file)
             data = list(reader)
-            if len(data) == 1:  # Only header row present
+            if len(data) == 1:
                 return 1
             else:
                 return int(data[-1][0]) + 1
@@ -77,13 +74,13 @@ class BankingApplication:
             writer.writerows(rows)
 
     def deposit(self, amount):
-        self.check_balance()  # Update current balance from CSV
+        self.check_balance()
         new_balance = self.current_balance + amount
         self.update_user_balance(new_balance)
         self.current_balance = new_balance
 
     def withdraw(self, amount):
-        self.check_balance()  # Update current balance from CSV
+        self.check_balance()
         if self.current_balance >= amount:
             new_balance = self.current_balance - amount
             self.update_user_balance(new_balance)
@@ -116,24 +113,18 @@ class BankingApplication:
 
 
 class BankingGUI:
-
-    def __init__(self):
-        self.current_balance = 0.0
-
     def __init__(self, master):
         self.master = master
         self.master.title("Banking Application")
-        self.master.geometry("800x600")  # Set the size of the main window
+        self.master.geometry("800x600")
         self.banking_app = BankingApplication()
         self.master.configure(bg='black')
 
-        self.logo_image = tk.PhotoImage(file="logo.png")  # Change "logo.png" to your image file
+        self.logo_image = tk.PhotoImage(file="logo.png")
 
-        # Create widgets inside the main window
         self.label = tk.Label(self.master, text="Binary Finance", font=('Helvetica', 20, 'bold'), bg='black', fg='gold')
         self.label.pack(pady=20)
 
-        # Display the logo
         self.logo_label = tk.Label(self.master, image=self.logo_image, bg='black')
         self.logo_label.pack()
 
@@ -143,39 +134,35 @@ class BankingGUI:
         self.login_button = tk.Button(self.master, text="Login", command=self.login, width=20, bg='gold', fg='black')
         self.login_button.pack(pady=10)
 
-        self.login_button = tk.Button(self.master, text="Forget Password", command=self.forgot_password, width=20, bg='gold', fg='black')
-        self.login_button.pack(pady=10)
+        self.forget_password_button = tk.Button(self.master, text="Forget Password", command=self.forgot_password, width=20, bg='gold', fg='black')
+        self.forget_password_button.pack(pady=10)
 
-        self.exit_button = tk.Button(self.master, text="Exit", command=self.master.destroy, width=20, bg='gold',fg='black')
+        self.exit_button = tk.Button(self.master, text="Exit", command=self.master.destroy, width=20, bg='gold', fg='black')
         self.exit_button.pack(pady=10)
 
     def register(self):
-        self.master.withdraw()  # Hide the main window
+        self.master.withdraw()
         register_window = tk.Toplevel(self.master)
         register_window.title("Register")
-        register_window.geometry("500x400")  # Set the size of the register window
-        register_window.configure(bg='black') # Corrected the method name
+        register_window.geometry("500x400")
+        register_window.configure(bg='black')
 
         self.logo_label = tk.Label(register_window, image=self.logo_image, bg='black')
         self.logo_label.pack()
 
-        # Username
         username_label = tk.Label(register_window, text="Enter a username:", font=("Arial", 12), fg='gold', bg='black')
-        username_label.pack(pady=10)  # Added padding in the y-direction for spacing
+        username_label.pack(pady=10)
 
         self.username_entry = tk.Entry(register_window, font=("Arial", 10))
-        self.username_entry.pack(pady=10)  # Added padding in the y-direction for spacing
+        self.username_entry.pack(pady=10)
 
-        # PIN
         pin_label = tk.Label(register_window, text="Enter a 4-digit bank PIN:", font=("Arial", 12), fg='gold', bg='black')
-        pin_label.pack(pady=10)  # Added padding in the y-direction for spacing
+        pin_label.pack(pady=10)
 
         self.pin_entry = tk.Entry(register_window, show="*", font=("Arial", 10))
-        self.pin_entry.pack(pady=10)  # Added padding in the y-direction for spacing
-        register_button = tk.Button(register_window, text="Register", command=self.perform_registration, width=15, bg='gold',
-                                 fg='black')
+        self.pin_entry.pack(pady=10)
+        register_button = tk.Button(register_window, text="Register", command=self.perform_registration, width=15, bg='gold', fg='black')
         register_button.pack(pady=10)
-
 
     def perform_registration(self):
         username = self.username_entry.get()
@@ -192,16 +179,15 @@ class BankingGUI:
         password = self.banking_app.generate_password()
         self.banking_app.register(username, bank_pin, password)
         messagebox.showinfo("Registration", f"Registration successful!\nYour password is: {password}")
-        self.master.deiconify()  # Show main window
+        self.master.deiconify()
 
     def login(self):
-        self.master.withdraw()  # Hide main window
+        self.master.withdraw()
         login_window = tk.Toplevel(self.master)
         login_window.title("Login")
-        login_window.geometry("500x400")  # Set the size of the login window
+        login_window.geometry("500x400")
         login_window.configure(bg='black')
 
-        # Display the logo
         self.logo_label = tk.Label(login_window, image=self.logo_image, bg='black')
         self.logo_label.pack(pady=10)
 
@@ -233,108 +219,99 @@ class BankingGUI:
 
         if self.banking_app.login(username, bank_pin, password):
             messagebox.showinfo("Login", "Login successful!")
-            self.show_transaction_options()
+            self.ask_for_transaction()
         else:
-            messagebox.showerror("Login Error", "Invalid username, PIN, or password.")
-            self.master.deiconify()  # Show main window
+            messagebox.showerror("Login Error", "Invalid credentials. Please try again.")
 
-    def forgot_password(self):
-        self.master.withdraw()  # Hide main window
-        forgot_password_window = tk.Toplevel(self.master)
-        forgot_password_window.title("Forgot Password")
-        forgot_password_window.geometry("500x400")  # Set the size of the forgot password window
-        forgot_password_window.configure(bg='black')
-
-        self.logo_label = tk.Label(forgot_password_window, image=self.logo_image, bg='black')
-        self.logo_label.pack()
-
-        username_label = tk.Label(forgot_password_window, text="Enter your username:", font=("Arial", 12), fg='gold', bg='black')
-        username_label.pack(pady=10)  # Added padding in the y-direction for spacing
-
-        self.username_entry = tk.Entry(forgot_password_window, font=("Arial", 12))
-        self.username_entry.pack(pady=10)  # Added padding in the y-direction for spacing
-
-        submit_button = tk.Button(forgot_password_window, text="Submit", command=self.perform_forgot_password, width=15, bg='gold', fg='black')
-        submit_button.pack(pady=10)
-
-    def perform_forgot_password(self):
-        username = self.username_entry.get()
-        password = self.banking_app.forgot_password(username)
-        if password:
-            messagebox.showinfo("Forgot Password", f"Your password is: {password}")
-            self.master.deiconify()  # Show main window
+    def ask_for_transaction(self):
+        response = messagebox.askyesno("Transaction", "Would you like to perform a transaction?")
+        if response:
+            self.main_menu()
         else:
-            messagebox.showerror("Error", "Username not found.")
-            self.master.deiconify()  # Show main window
+            self.check_balance()
 
-    def show_transaction_options(self):
-        self.master.withdraw()  # Hide main window
-        transaction_window = tk.Toplevel(self.master)
-        transaction_window.title("Transaction Options")
-        transaction_window.geometry("500x400")  # Set the size of the transaction options window
-        transaction_window.configure(bg='black')
+    def main_menu(self):
+        main_menu_window = tk.Toplevel(self.master)
+        main_menu_window.title("Main Menu")
+        main_menu_window.geometry("500x400")
+        main_menu_window.configure(bg='black')
 
-        self.logo_label = tk.Label(transaction_window, image=self.logo_image, bg='black')
-        self.logo_label.pack(pady=10)
+        self.banking_app.check_balance()
 
-        balance_button = tk.Button(transaction_window, text="Check Balance", command=self.show_balance, width=20, bg='gold', fg='black')
+        balance_label = tk.Label(main_menu_window, text=f"Balance: R{self.banking_app.current_balance}", font=('Helvetica', 14), bg='black', fg='gold')
+        balance_label.pack(pady=10)
+
+        balance_button = tk.Button(main_menu_window, text="Check Balance", command=self.check_balance, width=20, bg='gold', fg='black')
         balance_button.pack(pady=10)
 
-        deposit_button = tk.Button(transaction_window, text="Deposit", command=self.deposit, width=20, bg='gold', fg='black')
+        deposit_button = tk.Button(main_menu_window, text="Deposit", command=self.deposit, width=20, bg='gold', fg='black')
         deposit_button.pack(pady=10)
 
-        withdraw_button = tk.Button(transaction_window, text="Withdraw", command=self.withdraw, width=20, bg='gold', fg='black')
+        withdraw_button = tk.Button(main_menu_window, text="Withdraw", command=self.withdraw, width=20, bg='gold', fg='black')
         withdraw_button.pack(pady=10)
 
-        download_button = tk.Button(transaction_window, text="Download Transactions", command=self.download_transactions, width=20, bg='gold', fg='black')
+        change_password_button = tk.Button(main_menu_window, text="Change Password", command=self.change_password, width=20, bg='gold', fg='black')
+        change_password_button.pack(pady=10)
+
+        download_button = tk.Button(main_menu_window, text="Download Transaction History", command=self.download_transaction_history, width=20, bg='gold', fg='black')
         download_button.pack(pady=10)
 
-        logout_button = tk.Button(transaction_window, text="Logout", command=self.logout, width=20, bg='gold', fg='black')
-        logout_button.pack(pady=10)
+        exit_button = tk.Button(main_menu_window, text="Logout", command=main_menu_window.destroy, width=20, bg='gold', fg='black')
+        exit_button.pack(pady=10)
 
-    def show_balance(self):
-        self.banking_app.check_balance()
-        messagebox.showinfo("Balance", f"Your current balance is: R{self.banking_app.current_balance:.2f}")
+    def check_balance(self):
+        balance = self.banking_app.current_balance
+        messagebox.showinfo("Balance", f"Your current balance is: R{balance}")
 
     def deposit(self):
-        amount = simpledialog.askfloat("Deposit", "Enter amount to deposit:")
-        if amount and amount > 0:
+        amount = simpledialog.askfloat("Deposit", "Enter the amount to deposit:")
+        if amount is not None:
             self.banking_app.deposit(amount)
             self.banking_app.record_transaction("Deposit", amount)
-            messagebox.showinfo("Deposit", f"Deposit successful! Amount: R{amount:.2f}")
-        else:
-            messagebox.showerror("Deposit Error", "Invalid amount entered.")
+            messagebox.showinfo("Deposit", f"Successfully deposited R{amount}")
 
     def withdraw(self):
-        amount = simpledialog.askfloat("Withdraw", "Enter amount to withdraw:")
-        if amount and amount > 0:
-            if self.banking_app.current_balance >= amount:
+        amount = simpledialog.askfloat("Withdraw", "Enter the amount to withdraw:")
+        if amount is not None:
+            if amount <= self.banking_app.current_balance:
                 self.banking_app.withdraw(amount)
                 self.banking_app.record_transaction("Withdraw", amount)
-                messagebox.showinfo("Withdraw", f"Withdrawal successful! Amount: R{amount:.2f}")
+                messagebox.showinfo("Withdraw", f"Successfully withdrew R{amount}")
             else:
                 messagebox.showerror("Withdraw Error", "Insufficient balance.")
-        else:
-            messagebox.showerror("Withdraw Error", "Invalid amount entered.")
 
-    def download_transactions(self):
-        transaction_file = 'TransactionLog.txt'
-        if os.path.exists(transaction_file):
-            save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-            if save_path:
-                with open(transaction_file, 'r') as file:
-                    content = file.readlines()
-                user_transactions = [line for line in content if f"- {self.banking_app.current_user} -" in line]
-                with open(save_path, 'w') as file:
-                    file.writelines(user_transactions)
-                messagebox.showinfo("Download", "Transaction log downloaded successfully.")
-        else:
-            messagebox.showerror("Download Error", "Transaction log file not found.")
+    def change_password(self):
+        new_password = simpledialog.askstring("Change Password", "Enter a new password:", show="*")
+        if new_password:
+            username = self.banking_app.current_user
+            self.banking_app.update_password(username, new_password)
+            messagebox.showinfo("Change Password", "Password updated successfully.")
 
-    def logout(self):
-        self.master.deiconify()  # Show main window
+    def forgot_password(self):
+        username = simpledialog.askstring("Forgot Password", "Enter your username:")
+        if username:
+            password = self.banking_app.forgot_password(username)
+            if password:
+                messagebox.showinfo("Forgot Password", f"Your password is: {password}")
+            else:
+                messagebox.showerror("Error", "Username not found.")
 
-# Main function to run the application
+    def download_transaction_history(self):
+        log_file_path = 'TransactionLog.txt'
+        if not os.path.exists(log_file_path):
+            messagebox.showerror("Error", "No transaction history found.")
+            return
+        
+        download_path = filedialog.asksaveasfilename(defaultextension=".txt", 
+                                                     filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        if download_path:
+            try:
+                with open(log_file_path, 'r') as src, open(download_path, 'w') as dst:
+                    dst.write(src.read())
+                messagebox.showinfo("Download", "Transaction history downloaded successfully.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to download transaction history: {str(e)}")
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = BankingGUI(root)
