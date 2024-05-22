@@ -241,9 +241,6 @@ class BankingGUI:
         balance_label = tk.Label(main_menu_window, text=f"Balance: R{self.banking_app.current_balance}", font=('Helvetica', 14), bg='black', fg='gold')
         balance_label.pack(pady=10)
 
-        balance_button = tk.Button(main_menu_window, text="Check Balance", command=self.check_balance, width=20, bg='gold', fg='black')
-        balance_button.pack(pady=10)
-
         deposit_button = tk.Button(main_menu_window, text="Deposit", command=self.deposit, width=20, bg='gold', fg='black')
         deposit_button.pack(pady=10)
 
