@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox, simpledialog, filedialog
 from datetime import datetime
 import random
 import string
@@ -10,7 +10,7 @@ import os
 class BankingApplication:
     def __init__(self):
         self.current_user = None
-        self.current_balance = 5
+        self.current_balance = 4
         self.user_file = 'users.csv'
         self.create_user_file()
 
@@ -93,28 +93,6 @@ class BankingApplication:
         with open('TransactionLog.txt', 'a') as file:
             file.write(f"{timestamp} - {self.current_user} - {transaction_type} - Amount: R{amount}\n")
 
-    class BankingApplication:
-        @staticmethod
-        def update_bank_data(balance):
-            with open("BankData.txt", "w") as bank_data_file:
-                bank_data_file.write(str(balance))
-
-        @staticmethod
-        def read_balance():
-            try:
-                with open("BankData.txt", "r") as bank_data_file:
-                    balance = float(bank_data_file.read())
-            except FileNotFoundError:
-                print("BankData.txt not found. Initializing balance to 0.0.")
-                balance = 0.0
-            except ValueError:
-                print("Invalid data in BankData.txt. Initializing balance to 0.0.")
-                balance = 0.0
-            except IOError as e:
-                print(f"An error occurred while reading the file: {e}")
-                balance = 0.0
-            return balance
-
     def update_password(self, username, new_password):
         rows = []
         with open(self.user_file, mode='r', newline='') as file:
@@ -135,11 +113,8 @@ class BankingApplication:
                     return row[3]
             return None
 
+
 class BankingGUI:
-
-    def __init__(self):
-        self.current_balance = 0.0
-
     def __init__(self, master):
         self.master = master
         self.master.title("Banking Application")
@@ -163,10 +138,10 @@ class BankingGUI:
         self.login_button = tk.Button(self.master, text="Login", command=self.login, width=20, bg='gold', fg='black')
         self.login_button.pack(pady=10)
 
-        self.login_button = tk.Button(self.master, text="Forget Password", command=self.forgot_password, width=20, bg='gold', fg='black')
-        self.login_button.pack(pady=10)
+        self.forgot_password_button = tk.Button(self.master, text="Forget Password", command=self.forgot_password, width=20, bg='gold', fg='black')
+        self.forgot_password_button.pack(pady=10)
 
-        self.exit_button = tk.Button(self.master, text="Exit", command=self.master.destroy, width=20, bg='gold',fg='black')
+        self.exit_button = tk.Button(self.master, text="Exit", command=self.master.destroy, width=20, bg='gold', fg='black')
         self.exit_button.pack(pady=10)
 
     def register(self):
@@ -192,10 +167,8 @@ class BankingGUI:
 
         self.pin_entry = tk.Entry(register_window, show="*", font=("Arial", 10))
         self.pin_entry.pack(pady=10)  # Added padding in the y-direction for spacing
-        register_button = tk.Button(register_window, text="Register", command=self.perform_registration, width=15, bg='gold',
-                                 fg='black')
+        register_button = tk.Button(register_window, text="Register", command=self.perform_registration, width=15, bg='gold', fg='black')
         register_button.pack(pady=10)
-
 
     def perform_registration(self):
         username = self.username_entry.get()
@@ -243,8 +216,7 @@ class BankingGUI:
         self.password_entry = tk.Entry(login_window, show="*", font=("Arial", 12))
         self.password_entry.pack(pady=10)
 
-        login_button = tk.Button(login_window, text="Login", command=self.perform_login, width=15, bg='gold',
-                                 fg='black')
+        login_button = tk.Button(login_window, text="Login", command=self.perform_login, width=15, bg='gold', fg='black')
         login_button.pack(pady=10)
 
     def perform_login(self):
@@ -285,24 +257,25 @@ class BankingGUI:
         exit_button.pack(pady=10)
         exit_button.configure(bg='gold')
 
+        # Add download transaction log button
+        download_button = tk.Button(transaction_window, text="Download Transaction Log", command=self.download_transaction_log, width=20, bg='gold', fg='black')
+        download_button.pack(pady=10)
+
         # Update the balance label with the current balance
         self.update_balance_label()
 
     def display_transaction_buttons(self, transaction_window):
-        deposit_button = tk.Button(transaction_window, text="Deposit", command=self.open_deposit_window, width=10,
-                                   fg='black')
+        deposit_button = tk.Button(transaction_window, text="Deposit", command=self.open_deposit_window, width=10, fg='black')
         deposit_button.pack(pady=10)
         deposit_button.configure(bg='gold')
 
-        withdraw_button = tk.Button(transaction_window, text="Withdraw", command=self.open_withdraw_window, width=10,
-                                    fg='black')
+        withdraw_button = tk.Button(transaction_window, text="Withdraw", command=self.open_withdraw_window, width=10, fg='black')
         withdraw_button.pack(pady=10)
         withdraw_button.configure(bg='gold')
 
     def update_balance_label(self):
         self.banking_app.check_balance()
         self.balance_label.config(text=f"Your current balance is: R{self.banking_app.current_balance}")
-
 
     def check_balance(self):
         self.banking_app.check_balance()
@@ -323,7 +296,7 @@ class BankingGUI:
         self.balance_label.pack(pady=10)
 
         # Create labels with font
-        amount_label = tk.Label(deposit_window, text="How much would you like to deposit? R", font=("Helvetica", 12),fg='gold', bg='black')
+        amount_label = tk.Label(deposit_window, text="How much would you like to deposit? R", font=("Helvetica", 12), fg='gold', bg='black')
         amount_label.pack(pady=10)
 
         # Create an entry for the user to input the amount
@@ -331,9 +304,13 @@ class BankingGUI:
         amount_entry.pack(pady=10)
 
         # Create a button to submit the deposit
-        deposit_button = tk.Button(deposit_window, text="Deposit",command=lambda: self.perform_deposit(amount_entry.get()), width=15)
+        deposit_button = tk.Button(deposit_window, text="Deposit", command=lambda: self.perform_deposit(amount_entry.get()), width=15)
         deposit_button.pack(pady=10)
         deposit_button.configure(bg='gold')
+
+        # Add download transaction log button
+        download_button = tk.Button(deposit_window, text="Download Transaction Log", command=self.download_transaction_log, width=20, bg='gold', fg='black')
+        download_button.pack(pady=10)
 
         # Update the balance label with the current balance
         self.update_balance_label()
@@ -379,6 +356,10 @@ class BankingGUI:
         withdraw_button.pack(pady=10)
         withdraw_button.configure(bg='gold')
 
+        # Add download transaction log button
+        download_button = tk.Button(withdraw_window, text="Download Transaction Log", command=self.download_transaction_log, width=20, bg='gold', fg='black')
+        download_button.pack(pady=10)
+
         # Update the balance label with the current balance
         self.update_balance_label()
 
@@ -386,23 +367,19 @@ class BankingGUI:
         try:
             amount = float(amount_str)
             if amount < 10 or amount % 1 != 0:
-                messagebox.showerror("Error",
-                                     "Invalid withdrawal amount. Please enter a whole number greater than or equal to R10.")
+                messagebox.showerror("Error", "Invalid withdrawal amount. Please enter a whole number greater than or equal to R10.")
                 return
 
             if amount > self.banking_app.current_balance:
-                messagebox.showerror("Error",
-                                     "Withdrawal amount exceeds the current balance. Please enter another amount.")
+                messagebox.showerror("Error", "Withdrawal amount exceeds the current balance. Please enter another amount.")
                 return
 
             self.banking_app.withdraw(amount)
             self.banking_app.record_transaction("Withdrawal", amount)
             self.check_balance()
-            messagebox.showinfo("Withdraw",
-                                f"Withdrew R{int(amount)}. Current Balance: R{self.banking_app.current_balance}")
+            messagebox.showinfo("Withdraw", f"Withdrew R{int(amount)}. Current Balance: R{self.banking_app.current_balance}")
         except ValueError:
             messagebox.showerror("Error", "Invalid input. Please enter a valid number.")
-
 
     def forgot_password(self):
         username = simpledialog.askstring("Forgot Password", "Enter your username:")
@@ -416,6 +393,18 @@ class BankingGUI:
         else:
             messagebox.showerror("Error", "Username not found.")
 
+    def download_transaction_log(self):
+        log_file = 'TransactionLog.txt'
+        if os.path.exists(log_file):
+            with open(log_file, 'r') as file:
+                log_content = file.read()
+            save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+            if save_path:
+                with open(save_path, 'w') as file:
+                    file.write(log_content)
+                messagebox.showinfo("Download", "Transaction log downloaded successfully!")
+        else:
+            messagebox.showerror("Error", "Transaction log file not found.")
 
 if __name__ == "__main__":
     root = tk.Tk()
