@@ -3,7 +3,11 @@
 2024-05-21 09:36:22 - ree - Withdrawal - Amount: R100000.0
 2024-05-21 09:38:24 - ree - Deposit - Amount: R1999999.0
 2024-05-21 09:38:40 - ree - Deposit - Amount: R1999999.0
+2024-05-21 14:44:55 - ree - Withdrawal - Amount: R90000000000.0
+2024-05-22 10:55:02 - ree - Withdrawal - Amount: R40000000.0
+2024-05-22 10:55:09 - ree - Withdrawal - Amount: R40000000.0
 2024-05-22 10:43:50 - Chris - Deposit - Amount: R1000.0
 2024-05-22 11:46:35 - Chris - Withdraw - Amount: R500.0
 2024-05-22 11:48:43 - Chris - Deposit - Amount: R1000.0
 2024-05-22 15:27:26 - Chris - Deposit - Amount: R10000.0
+2024-05-23 09:27:55 - ree - Withdrawal - Amount: R9000000000.0
