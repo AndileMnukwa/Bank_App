@@ -10,7 +10,7 @@ import os
 class BankingApplication:
     def __init__(self):
         self.current_user = None
-        self.current_balance = 4
+        self.current_balance = 5
         self.user_file = 'users.csv'
         self.create_user_file()
 
@@ -93,6 +93,28 @@ class BankingApplication:
         with open('TransactionLog.txt', 'a') as file:
             file.write(f"{timestamp} - {self.current_user} - {transaction_type} - Amount: R{amount}\n")
 
+    class BankingApplication:
+        @staticmethod
+        def update_bank_data(balance):
+            with open("BankData.txt", "w") as bank_data_file:
+                bank_data_file.write(str(balance))
+
+        @staticmethod
+        def read_balance():
+            try:
+                with open("BankData.txt", "r") as bank_data_file:
+                    balance = float(bank_data_file.read())
+            except FileNotFoundError:
+                print("BankData.txt not found. Initializing balance to 0.0.")
+                balance = 0.0
+            except ValueError:
+                print("Invalid data in BankData.txt. Initializing balance to 0.0.")
+                balance = 0.0
+            except IOError as e:
+                print(f"An error occurred while reading the file: {e}")
+                balance = 0.0
+            return balance
+
     def update_password(self, username, new_password):
         rows = []
         with open(self.user_file, mode='r', newline='') as file:
@@ -112,7 +134,6 @@ class BankingApplication:
                 if row[1] == username:
                     return row[3]
             return None
-
 
 class BankingGUI:
 
@@ -381,6 +402,7 @@ class BankingGUI:
                                 f"Withdrew R{int(amount)}. Current Balance: R{self.banking_app.current_balance}")
         except ValueError:
             messagebox.showerror("Error", "Invalid input. Please enter a valid number.")
+
 
     def forgot_password(self):
         username = simpledialog.askstring("Forgot Password", "Enter your username:")
