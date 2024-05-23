@@ -298,7 +298,8 @@ class BankingGUI:
         self.balance_label.pack(pady=10)
 
         # Create labels with font
-        amount_label = tk.Label(deposit_window, text="How much would you like to deposit? R", font=("Helvetica", 12), fg='gold', bg='black')
+        amount_label = tk.Label(deposit_window, text="How much would you like to deposit? R", font=("Helvetica", 12),
+                                fg='gold', bg='black')
         amount_label.pack(pady=10)
 
         # Create an entry for the user to input the amount
@@ -306,18 +307,26 @@ class BankingGUI:
         amount_entry.pack(pady=10)
 
         # Create a button to submit the deposit
-        deposit_button = tk.Button(deposit_window, text="Deposit", command=lambda: self.perform_deposit(amount_entry.get()), width=15)
+        deposit_button = tk.Button(deposit_window, text="Deposit", command=lambda: self.perform_deposit(amount_entry),
+                                   width=15)
         deposit_button.pack(pady=10)
         deposit_button.configure(bg='gold')
 
         # Add download transaction log button
-        download_button = tk.Button(deposit_window, text="Download Transaction Log", command=self.download_transaction_log, width=20, bg='gold', fg='black')
+        download_button = tk.Button(deposit_window, text="Download Transaction Log",
+                                    command=self.download_transaction_log, width=20, bg='gold', fg='black')
         download_button.pack(pady=10)
 
         # Update the balance label with the current balance
         self.update_balance_label()
 
-    def perform_deposit(self, amount_str):
+        # Back button: to transaction window/
+        back_button = tk.Button(deposit_window, text="Back", command=self.show_transaction_options, width=15, bg='gold',
+                                fg='black')
+        back_button.pack(pady=10)
+
+    def perform_deposit(self, amount_entry):
+        amount_str = amount_entry.get()
         try:
             amount = float(amount_str)
             if amount <= 0:
@@ -328,6 +337,10 @@ class BankingGUI:
             self.banking_app.record_transaction("Deposit", amount)
             self.check_balance()
             messagebox.showinfo("Deposit", f"Deposited R{amount}. Current Balance: R{self.banking_app.current_balance}")
+
+            # Clear the deposit text box after successful deposit
+            amount_entry.delete(0, 'end')
+
         except ValueError:
             messagebox.showerror("Error", "Invalid input. Please enter a valid number.")
 
@@ -364,6 +377,11 @@ class BankingGUI:
 
         # Update the balance label with the current balance
         self.update_balance_label()
+
+        # back button to transaction windo
+        back_button = tk.Button(withdraw_window, text="Back", command=self.show_transaction_options, width=15,
+                                bg='gold', fg='black')
+        back_button.pack(pady=10)
 
     def perform_withdraw(self, amount_str):
         try:
