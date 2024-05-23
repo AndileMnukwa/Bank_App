@@ -17,3 +17,9 @@
 2024-05-23 09:08:43 - Thandy - Withdrawal - Amount: R5000.0
 2024-05-23 09:22:14 - Thandy - Withdrawal - Amount: R500.0
 2024-05-23 09:37:20 - Thandy - Withdrawal - Amount: R200.0
+2024-05-23 10:28:33 - ree - Withdrawal - Amount: R80000000.0
+2024-05-23 10:56:38 - onwaba - Deposit - Amount: R1000.0
+2024-05-23 10:56:44 - onwaba - Deposit - Amount: R1000.0
+2024-05-23 11:01:08 - onwaba - Withdrawal - Amount: R500.0
+2024-05-23 11:35:55 - poppy - Deposit - Amount: R100.0
+2024-05-23 11:35:59 - poppy - Deposit - Amount: R100.0
