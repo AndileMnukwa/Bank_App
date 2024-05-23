@@ -17,3 +17,4 @@
 2024-05-23 09:08:43 - Thandy - Withdrawal - Amount: R5000.0
 2024-05-23 09:22:14 - Thandy - Withdrawal - Amount: R500.0
 2024-05-23 09:37:20 - Thandy - Withdrawal - Amount: R200.0
+2024-05-23 10:08:18 - mbasa - Deposit - Amount: R1000.0
