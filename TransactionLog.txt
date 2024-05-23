@@ -33,4 +33,10 @@
 2024-05-23 13:14:37 - Thandy - Deposit - Amount: R100.0
 2024-05-23 13:36:42 - Thandy - Deposit - Amount: R40.0
 2024-05-23 14:02:37 - Thandy - Deposit - Amount: R100.0
-2024-05-23 14:28:54 - Thandy - Deposit - Amount: R50.0
+2024-05-23 14:17:35 - poppy - Deposit - Amount: R12.0
+2024-05-23 15:04:00 - poppy - Deposit - Amount: R122.0
+2024-05-23 15:20:12 - Thandy - Withdrawal - Amount: R150.0
+2024-05-23 15:25:42 - Thandy - Withdrawal - Amount: R50.0
+2024-05-23 15:27:31 - Thandy - Withdrawal - Amount: R10.0
+2024-05-23 15:30:12 - Thandy - Withdrawal - Amount: R20.0
+2024-05-23 15:48:45 - Thandy - Withdrawal - Amount: R10.0
