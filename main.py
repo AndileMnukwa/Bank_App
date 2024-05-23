@@ -241,6 +241,10 @@ class BankingGUI:
         self.logo_label = tk.Label(transaction_window, image=self.logo_image, bg='black')
         self.logo_label.pack()
 
+        # Display balance label
+        self.balance_label = tk.Label(transaction_window, text="", bg='black', fg='gold', font=("Helvetica", 15))
+        self.balance_label.pack(pady=10)
+
         make_transaction = messagebox.askyesno("Transaction", "Would you like to make a transaction?")
         if make_transaction:
             transaction_type = messagebox.askyesno("Transaction Type", "Would you like to make a deposit/withdraw?")
@@ -249,13 +253,7 @@ class BankingGUI:
             else:
                 self.display_transaction_buttons(transaction_window)
 
-        # Display balance label
-        self.balance_label = tk.Label(transaction_window, text="", bg='black', fg='gold', font=("Helvetica", 15))
-        self.balance_label.pack(pady=10)
 
-        exit_button = tk.Button(transaction_window, text="Exit", command=self.master.destroy, width=10)
-        exit_button.pack(pady=10)
-        exit_button.configure(bg='gold')
 
         # Add download transaction log button
         download_button = tk.Button(transaction_window, text="Download Transaction Log", command=self.download_transaction_log, width=20, bg='gold', fg='black')
@@ -263,6 +261,10 @@ class BankingGUI:
 
         # Update the balance label with the current balance
         self.update_balance_label()
+
+        exit_button = tk.Button(transaction_window, text="Exit", command=self.master.destroy, width=10)
+        exit_button.pack(pady=10)
+        exit_button.configure(bg='gold')
 
     def display_transaction_buttons(self, transaction_window):
         deposit_button = tk.Button(transaction_window, text="Deposit", command=self.open_deposit_window, width=10, fg='black')
