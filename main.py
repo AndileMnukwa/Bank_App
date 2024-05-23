@@ -320,6 +320,11 @@ class BankingGUI:
         # Update the balance label with the current balance
         self.update_balance_label()
 
+        # Back button: to transaction window/
+        back_button = tk.Button(deposit_window, text="Back", command=self.show_transaction_options, width=15, bg='gold',
+                                fg='black')
+        back_button.pack(pady=10)
+
     def perform_deposit(self, amount_entry):
         amount_str = amount_entry.get()
         try:
@@ -372,6 +377,11 @@ class BankingGUI:
 
         # Update the balance label with the current balance
         self.update_balance_label()
+
+        # back button to transaction windo
+        back_button = tk.Button(withdraw_window, text="Back", command=self.show_transaction_options, width=15,
+                                bg='gold', fg='black')
+        back_button.pack(pady=10)
 
     def perform_withdraw(self, amount_str):
         try:
